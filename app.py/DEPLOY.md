@@ -95,6 +95,33 @@ That’s a full rewrite. For this project, use **Streamlit Community Cloud** ins
 - **Free tier:** The service may spin down after 15 minutes of no use; the next visit can take 30–60 seconds to wake up.
 - **Files:** `Movie_dict.pkl`, `Similarity.pkl`, and the `assests/` folder must be in the repo (and in the same path your app expects), or the app will fail at runtime.
 
+### Troubleshooting: "Connection failed with status 503"
+
+**1. Cold start (most common)**  
+On the free tier, the app **sleeps** after ~15 minutes of no traffic. The first request after that can return **503** while the server is waking up.  
+- **Fix:** Wait **30–60 seconds** and **refresh** the page. Avoid closing the tab as soon as you see 503.
+
+**2. Check Render logs**  
+- In the Render dashboard, open your **Web Service** → **Logs** (and **Events**) tab.  
+- Look for **"Your service is live"** (startup succeeded) or errors like **"Killed"**, **"Out of memory"**, **"ModuleNotFoundError"**, or **"FileNotFoundError"**.  
+- If you see **Out of memory** or **Killed**: the free instance (512 MB RAM) may be too small for loading `Similarity.pkl` (~176 MB) plus Streamlit.  
+  - **Fix:** Upgrade to a **paid instance** (e.g. 512 MB → 1 GB+) on Render, or deploy on **Streamlit Community Cloud** (often more generous for this kind of app).
+
+**3. Build / start command**  
+- Ensure **Root Directory** is empty (or set to `app.py` if you use that as root).  
+- Build: `cd app.py && pip install -r requirements.txt`  
+- Start: `cd app.py && streamlit run app1.py --server.port=$PORT --server.address=0.0.0.0 --server.headless=true`
+
+**4. Git LFS**  
+- Render’s build image does **not** include Git LFS, so do **not** put `git lfs pull` in the Build Command (you’ll get “git: 'lfs' is not a git command”). Render fetches LFS files during **clone** by default, so use Build Command: `pip install -r requirements.txt` only. If the app later fails to find `Similarity.pkl`, the LFS file may not have been pulled; in that case consider hosting the file elsewhere or using another platform (e.g. Streamlit Community Cloud).
+
+**5. Build failed: "Exited with status 1" / Python 3.14**  
+- Render may use Python 3.14 by default; Streamlit and other deps often don’t support it yet. Pin the runtime: add a **`runtime.txt`** at your **repo root** (same level as the `app.py` folder) with:
+  ```
+  python-3.11.7
+  ```
+  Commit, push, and redeploy. If your Render **Root Directory** is set to `app.py`, put `runtime.txt` inside `app.py` instead.
+
 ---
 
 ## Option 3: Other platforms that run Streamlit
