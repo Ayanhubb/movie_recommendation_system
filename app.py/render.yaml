@@ -1,0 +1,11 @@
+# Render Blueprint for Streamlit Movie Recommendation App
+# Docs: https://render.com/docs/blueprint-spec
+services:
+  - type: web
+    name: movie-recommendation
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: streamlit run app1.py --server.port=$PORT --server.address=0.0.0.0 --server.headless=true
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
