@@ -66,18 +66,13 @@ That’s a full rewrite. For this project, use **Streamlit Community Cloud** ins
 
 ### 4. Configure the Web Service
 
+- **Root Directory:** Set to **`app.py`** (required). Your `requirements.txt` and `app1.py` are inside this folder; without it, the build runs from the repo root and fails with "Could not open requirements file".
 - **Name:** e.g. `movie-recommendation` (or any name you like).
 - **Region:** Choose the one closest to you.
-- **Branch:** `main` (or the branch you use).
+- **Branch:** `master` (or the branch you use).
 - **Runtime:** **Python 3**.
-- **Build Command:**  
-  `pip install -r requirements.txt`  
-  (If your files are in a subfolder, e.g. `app.py/`, use:  
-  `cd app.py && pip install -r requirements.txt`)
-- **Start Command:**  
-  `streamlit run app1.py --server.port=$PORT --server.address=0.0.0.0 --server.headless=true`  
-  (If your app is in a subfolder:  
-  `cd app.py && streamlit run app1.py --server.port=$PORT --server.address=0.0.0.0 --server.headless=true`)
+- **Build Command:** `pip install -r requirements.txt`
+- **Start Command:** `streamlit run app1.py --server.port=$PORT --server.address=0.0.0.0 --server.headless=true`
 - **Instance type:** Free (or paid if you prefer).
 
 ### 5. Deploy
