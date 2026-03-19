@@ -569,10 +569,19 @@ RECS_ANIM_HTML = """
 </div>
 """
 
-movies_dict = pickle.load(open("Movie_dict.pkl", "rb"))
-movies = pd.DataFrame(movies_dict)
-similarity = pickle.load(open("Similarity.pkl", "rb"))
-movie_list = movies["title"].values
+@st.cache_data(ttl=None)
+def _load_data():
+    """Load pickles once; paths relative to script so deployment CWD doesn't matter."""
+    base = os.path.dirname(os.path.abspath(__file__))
+    with open(os.path.join(base, "Movie_dict.pkl"), "rb") as f:
+        movies_dict = pickle.load(f)
+    with open(os.path.join(base, "Similarity.pkl"), "rb") as f:
+        sim = pickle.load(f)
+    df = pd.DataFrame(movies_dict)
+    return movies_dict, df, sim, df["title"].values
+
+_movies_dict, movies, similarity, movie_list = _load_data()
+movies_dict = _movies_dict
 
 # Picker section FIRST (visible on page load, no scrolling needed)
 st.markdown(
